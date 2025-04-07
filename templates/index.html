@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Melanoma Prediction</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .image-upload-container {
+            border: 2px dashed #ccc;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            margin-bottom: 20px;
+            cursor: pointer;
+            transition: border-color 0.3s ease;
+        }
+        .image-upload-container:hover {
+            border-color: #0d6efd;
+        }
+        #imagePreview {
+            max-width: 100%;
+            max-height: 300px;
+            margin: 20px auto;
+            display: none;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .prediction-card {
+            display: none;
+            margin-top: 20px;
+        }
+        .loading-spinner {
+            display: none;
+            margin: 20px auto;
+        }
+        .error-message {
+            display: none;
+            color: #dc3545;
+            margin-top: 10px;
+        }
+        .melanoma-warning {
+            background-color: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container py-5">
+        <h1 class="text-center mb-4">Skin Lesion Analysis</h1>
+        
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <form id="predictForm" class="needs-validation" novalidate>
+                    <!-- Image Upload -->
+                    <div class="image-upload-container" onclick="document.getElementById('imageInput').click()">
+                        <input type="file" class="d-none" id="imageInput" name="image-input" accept="image/*" required>
+                        <div class="upload-placeholder">
+                            <i class="bi bi-cloud-upload"></i>
+                            <p class="mb-0">Click or drag to upload image</p>
+                            <small class="text-muted">Supported formats: JPG, PNG</small>
+                        </div>
+                    </div>
+                    <img id="imagePreview" class="img-fluid" alt="Preview">
+
+                    <div class="row g-3">
+                        <!-- Age Input -->
+                        <div class="col-md-4">
+                            <label for="ageInput" class="form-label">Age</label>
+                            <input type="number" class="form-control" id="ageInput" name="age" 
+                                   min="0" max="120" required>
+                            <div class="invalid-feedback">
+                                Please enter a valid age (0-120).
+                            </div>
+                        </div>
+
+                        <!-- Sex Selection -->
+                        <div class="col-md-4">
+                            <label for="sexInput" class="form-label">Sex</label>
+                            <select class="form-select" id="sexInput" name="sex" required>
+                                <option value="">Choose...</option>
+                                <option value="male">Male</option>
+                                <option value="female">Female</option>
+                            </select>
+                            <div class="invalid-feedback">
+                                Please select sex.
+                            </div>
+                        </div>
+
+                        <!-- Location Selection -->
+                        <div class="col-md-4">
+                            <label for="locationInput" class="form-label">Lesion Location</label>
+                            <select class="form-select" id="locationInput" name="anatom_site_general" required>
+                                <option value="">Choose...</option>
+                                <option value="head/neck">Head/Neck</option>
+                                <option value="anterior torso">Anterior Torso</option>
+                                <option value="lateral torso">Lateral Torso</option>
+                                <option value="posterior torso">Posterior Torso</option>
+                                <option value="torso">Torso (General)</option>
+                                <option value="upper extremity">Upper Extremity</option>
+                                <option value="lower extremity">Lower Extremity</option>
+                                <option value="palms/soles">Palms/Soles</option>
+                                <option value="oral/genital">Oral/Genital</option>
+                            </select>
+                            <div class="invalid-feedback">
+                                Please select lesion location.
+                            </div>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary w-100 mt-4">
+                        Analyze Image
+                    </button>
+                </form>
+
+                <!-- Loading Spinner -->
+                <div class="loading-spinner text-center">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                    <p class="mt-2">Analyzing image...</p>
+                </div>
+
+                <!-- Error Message -->
+                <div class="error-message alert alert-danger" role="alert">
+                </div>
+
+                <!-- Results Section -->
+                <div class="prediction-card card">
+                    <div class="card-body">
+                        <h5 class="card-title">Analysis Results</h5>
+                        
+                        <!-- Predictions -->
+                        <div id="predictionResult">
+                            <!-- Top 3 predictions will be inserted here -->
+                        </div>
+
+                        <!-- Image Analysis Visualization -->
+                        <div class="row mt-4">
+                            <div class="col-md-6">
+                                <h6>Original Image</h6>
+                                <img id="resultImage" class="img-fluid rounded" style="max-height: 300px; display: none;">
+                            </div>
+                            <div class="col-md-6">
+                                <h6>Attention Map</h6>
+                                <img id="gradCamImage" class="img-fluid rounded" style="max-height: 300px; display: none;">
+                                <p class="text-muted small mt-2">
+                                    The heatmap shows regions the model focused on for its prediction.
+                                    Warmer colors (red) indicate higher attention.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div id="melanomaWarning" class="melanoma-warning mt-4" style="display: none;">
+                            <strong>Important Notice:</strong>
+                            <p class="mb-0">This tool is for educational purposes only. Please consult a healthcare professional for proper medical diagnosis.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Form validation
+        const form = document.getElementById('predictForm');
+        const imageInput = document.getElementById('imageInput');
+        const imagePreview = document.getElementById('imagePreview');
+        const loadingSpinner = document.querySelector('.loading-spinner');
+        const errorMessage = document.querySelector('.error-message');
+        const predictionCard = document.querySelector('.prediction-card');
+        const predictionResult = document.getElementById('predictionResult');
+        const melanomaWarning = document.getElementById('melanomaWarning');
+
+        // Image preview
+        imageInput.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    imagePreview.src = e.target.result;
+                    imagePreview.style.display = 'block';
+                }
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // Form submission
+        form.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            // Validate form
+            if (!form.checkValidity()) {
+                e.stopPropagation();
+                form.classList.add('was-validated');
+                return;
+            }
+
+            // Reset UI states
+            loadingSpinner.style.display = 'block';
+            errorMessage.style.display = 'none';
+            predictionCard.style.display = 'none';
+            melanomaWarning.style.display = 'none';
+
+            try {
+                const formData = new FormData(form);
+                const response = await fetch('/predict', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const result = await response.json();
+                
+                if (result.error) {
+                    throw new Error(result.error);
+                }
+
+                // Display results
+                let resultHTML = '<div class="list-group mb-4">';  // Added margin bottom
+                result.predictions.forEach((pred, index) => {
+                    const probability = parseFloat(pred.probability) * 100;
+                    const badgeClass = pred.is_melanoma ? 'bg-warning' : 'bg-primary';
+                    
+                    resultHTML += `
+                        <div class="list-group-item d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="mb-0">${pred.class_name}</h6>
+                                <small class="text-muted">Prediction ${index + 1}</small>
+                            </div>
+                            <span class="badge ${badgeClass} rounded-pill">${probability.toFixed(1)}%</span>
+                        </div>
+                    `;
+                });
+                resultHTML += '</div>';
+
+                predictionResult.innerHTML = resultHTML;
+                
+                // Display original image in results
+                const resultImage = document.getElementById('resultImage');
+                resultImage.src = imagePreview.src;
+                resultImage.style.display = 'block';
+
+                // Display Grad-CAM if available
+                const gradCamImage = document.getElementById('gradCamImage');
+                if (result.grad_cam_image) {
+                    gradCamImage.src = result.grad_cam_image;
+                    gradCamImage.style.display = 'block';
+                } else {
+                    gradCamImage.style.display = 'none';
+                }
+
+                // Add melanoma-specific probability if available
+                if (result.melanoma_probability) {
+                    const melanomaProb = parseFloat(result.melanoma_probability) * 100;
+                    if (melanomaProb > 20) {  // Threshold for showing warning
+                        melanomaWarning.style.display = 'block';
+                    }
+                }
+
+                predictionCard.style.display = 'block';
+
+            } catch (error) {
+                console.error('Error:', error);
+                errorMessage.textContent = error.message || 'An error occurred during prediction.';
+                errorMessage.style.display = 'block';
+            } finally {
+                loadingSpinner.style.display = 'none';
+            }
+        });
+
+        // Reset form validation on input
+        form.querySelectorAll('input, select').forEach(input => {
+            input.addEventListener('input', () => {
+                if (form.classList.contains('was-validated')) {
+                    form.classList.remove('was-validated');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
