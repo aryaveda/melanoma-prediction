@@ -345,6 +345,14 @@ def load_model():
 def home():
     return render_template('index.html')
 
+@app.route('/predictor')
+def predictor_page():
+    return render_template('predict.html')
+
+@app.route('/about')
+def about_page():
+    return render_template('about.html')
+
 def get_target_layer(model):
     """Get the target layer for Grad-CAM visualization."""
     try:
@@ -589,7 +597,22 @@ def predict():
             'temperature_used': OPTIMAL_TEMP,
             'metadata_used': USE_METADATA and meta_tensor is not None
         }
-        
+
+        # Add original and processed metadata if used
+        if USE_METADATA and meta_tensor is not None:
+            result['original_metadata'] = metadata # Add the original metadata dict
+            # Convert tensor to list for JSON serialization
+            processed_metadata_list = meta_tensor.squeeze().tolist() 
+            result['processed_metadata'] = {
+                'sex_processed': processed_metadata_list[0],
+                'age_normalized': f"{processed_metadata_list[1]:.4f}",
+                'n_images_log': f"{processed_metadata_list[2]:.4f}",
+                'image_size_log': f"{processed_metadata_list[3]:.4f}",
+                'location_one_hot': [f"{x:.1f}" for x in processed_metadata_list[4:]] # Format one-hot vector
+            }
+            # Optionally add location column names for clarity
+            result['processed_metadata']['location_columns'] = LOCATION_COLS_LIST
+
         if grad_cam_image:
             result['grad_cam_image'] = grad_cam_image
 

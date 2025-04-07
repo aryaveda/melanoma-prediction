@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About - Melanoma Prediction</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <style>
+        body {
+            padding-top: 56px; /* Adjust based on navbar height */
+        }
+        .section-padding {
+            padding: 40px 0;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/">Melanoma Predictor</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/predictor">Try Predictor</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="/about">About</a>
+                    </li>
+                    <!-- Add other links here if needed -->
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container section-padding">
+        <h1 class="mb-4">About This Project & Methodology</h1>
+
+        <section id="problem-overview" class="mb-5">
+            <h2><i class="bi bi-shield-exclamation me-2"></i>The Challenge: Skin Cancer Classification</h2>
+            <p>Skin cancer, particularly melanoma, is a significant health concern worldwide. Early detection drastically improves prognosis, but accurate visual diagnosis can be challenging even for experienced dermatologists. Automated systems using deep learning offer potential to assist clinicians by providing objective analysis of dermoscopic images.</p>
+            <p>This project addresses the challenge of classifying skin lesions into multiple categories (including melanoma and various benign types) using dermoscopic images and associated patient metadata.</p>
+        </section>
+
+        <section id="model-architecture" class="mb-5">
+            <h2><i class="bi bi-diagram-3 me-2"></i>Model Architecture</h2>
+            <p>The core of this tool is a hybrid deep learning model designed to leverage both visual information from images and contextual information from patient metadata:</p>
+            <ul>
+                <li><strong>Convolutional Neural Network (CNN):</strong> An EfficientNet (specifically, EfficientNet-B5) acts as the primary image feature extractor. EfficientNets are known for their balance of accuracy and computational efficiency. It processes the input image to capture visual patterns and textures relevant to lesion classification.</li>
+                <li><strong>Vision Transformer (ViT):</strong> A small Vision Transformer operates in parallel with the CNN. ViTs process images by dividing them into patches and analyzing relationships between these patches, capturing global context that might be missed by the CNN.</li>
+                <li><strong>Feature Fusion:</strong> Features extracted by the CNN and ViT are concatenated and passed through a fusion layer (a Multi-Layer Perceptron - MLP) to create a combined visual representation.</li>
+                <li><strong>Metadata Integration (Conditional):</strong> If enabled (<code>USE_METADATA=True</code> in the configuration), patient metadata (age, sex, lesion location) is processed through a separate pathway involving an <strong>Attention Mechanism</strong>. This allows the model to weigh the importance of different metadata features. The processed metadata representation is then added to the fused visual features.</li>
+                <li><strong>Classifier:</strong> The final combined feature vector is fed into a classifier (another MLP) to produce the probability scores for each skin lesion category.</li>
+            </ul>
+            <p>This hybrid approach aims to capture both fine-grained local details (CNN) and broader global context (ViT), enhanced by relevant patient information when available.</p>
+        </section>
+
+        <section id="data" class="mb-5">
+            <h2><i class="bi bi-database me-2"></i>Dataset(s)</h2>
+            <p>The model was trained on [**Placeholder: Briefly mention the primary dataset(s) used, e.g., ISIC Challenge datasets (specify years if possible), HAM10000, etc.**]. The dataset consists of dermoscopic images and corresponding metadata where available.</p>
+            <p>[**Placeholder: Optionally mention any specific data augmentation techniques used during training.**]</p>
+        </section>
+
+        <section id="techniques" class="mb-5">
+            <h2><i class="bi bi-tools me-2"></i>Key Techniques</h2>
+            <ul>
+                <li><strong>Phased Training (if applicable):</strong> [**Placeholder: Briefly describe if you used phased training, e.g., training image-only first, then fine-tuning with metadata.**]</li>
+                <li><strong>Model Calibration:</strong> Temperature scaling (controlled by <code>OPTIMAL_TEMP</code>) is applied to the model's outputs (logits) before the final Softmax activation. This technique helps to ensure that the predicted probabilities better reflect the true likelihoods of the classes.</li>
+                <li><strong>Grad-CAM Visualization:</strong> Gradient-weighted Class Activation Mapping (Grad-CAM) is used to generate heatmaps highlighting the image regions most influential in the model's prediction for a specific class. This provides visual interpretability of the model's decision process.</li>
+            </ul>
+        </section>
+
+        <section id="thesis-contact" class="mb-5">
+            <h2><i class="bi bi-journal-text me-2"></i>Thesis & Contact</h2>
+            <p>[**Placeholder: Link to your thesis paper or preprint if available, e.g., "For a more detailed explanation, please refer to my thesis: [Link Here]" or "A preprint detailing the methodology can be found here: [Link Here]"**]</p>
+            <p>Developed by: [**Your Name**]</p>
+            <p>Affiliation: [**Your University/Institution**]</p>
+            <p>Contact: [**Your Email Address or Contact Link**]</p>
+        </section>
+
+         <section id="disclaimer">
+            <h2><i class="bi bi-exclamation-triangle me-2"></i>Disclaimer</h2>
+            <p class="text-danger"><strong>Important:</strong> This tool is intended for educational and research purposes only. It is <strong>not</strong> a substitute for professional medical advice, diagnosis, or treatment. Always seek the advice of your physician or other qualified health provider with any questions you may have regarding a medical condition. Never disregard professional medical advice or delay in seeking it because of something you have seen or read on this tool.</p>
+        </section>
+
+    </div>
+
+    <!-- Footer -->
+    <footer class="py-4 bg-dark text-white text-center">
+        <div class="container">
+            <p class="mb-0">&copy; 2024 Melanoma Predictor. All rights reserved.</p>
+            <!-- Add links or other footer content here -->
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html> 
