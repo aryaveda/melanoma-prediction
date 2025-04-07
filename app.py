@@ -350,8 +350,14 @@ def predictor_page():
     return render_template('predict.html')
 
 @app.route('/about')
-def about_page():
-    return render_template('about.html')
+def about():
+    """Renders the about page."""
+    return render_template('about.html', title='About')
+
+@app.route('/skin-info') # New route
+def skin_info():
+    """Renders the skin cancer information page."""
+    return render_template('skin_info.html', title='Skin Cancer Info')
 
 def get_target_layer(model):
     """Get the target layer for Grad-CAM visualization."""

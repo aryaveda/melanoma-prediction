@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ title }} - Melanoma Predictor</title> <!-- Use title variable -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body class="d-flex flex-column min-vh-100">
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-lg fixed-top">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/">
+                <img src="{{ url_for('static', filename='images/logo512.png') }}" alt="Logo" height="30" class="d-inline-block align-text-top me-2">
+                Melanoma Predictor
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/predictor">Try Predictor</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/about">About</a>
+                    </li>
+                     <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="/skin-info">Skin Info</a> <!-- Added Skin Info link -->
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container section-padding">
+        <main class="flex-shrink-0">
+            <h1 class="mb-4">Understanding Skin Cancer</h1>
+
+            <section id="what-is" class="mb-5">
+                <h2><i class="bi bi-question-circle me-2"></i>What is Skin Cancer?</h2>
+                <p>Skin cancer is the uncontrolled growth of abnormal skin cells. It occurs when DNA damage to skin cells (most often caused by ultraviolet radiation from sunshine or tanning beds) triggers mutations, or genetic defects, that lead the skin cells to multiply rapidly and form malignant tumors.</p>
+                <p>While it often develops on sun-exposed skin (like the scalp, face, lips, ears, neck, chest, arms, and hands), skin cancer can also form on areas that rarely see the sun, including your palms, beneath your fingernails or toenails, and your genital area.</p>
+                <p>Early detection is crucial as it significantly increases the chances of successful treatment.</p>
+            </section>
+
+            <section id="types" class="mb-5">
+                <h2><i class="bi bi-grid-3x3-gap me-2"></i>Types of Skin Lesions</h2>
+                <p>Our model is trained to identify various types of skin lesions, including both cancerous and non-cancerous conditions:</p>
+                <div class="accordion" id="skinCancerTypesAccordion">
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="headingMelanoma">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseMelanoma" aria-expanded="false" aria-controls="collapseMelanoma">
+                            <strong>Melanoma</strong>
+                        </button>
+                        </h2>
+                        <div id="collapseMelanoma" class="accordion-collapse collapse" aria-labelledby="headingMelanoma" data-bs-parent="#skinCancerTypesAccordion">
+                        <div class="accordion-body">
+                            Melanoma develops in the melanocytes, the cells that produce melanin (the pigment that gives skin its color). Although less common than other types of skin cancer, melanoma is the most dangerous form because of its high likelihood of spreading (metastasizing) to other parts of the body if not detected and treated early. It can appear as a new mole or a change in an existing mole.
+                        </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="headingBCC">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseBCC" aria-expanded="false" aria-controls="collapseBCC">
+                            <strong>Basal Cell Carcinoma (BCC)</strong>
+                        </button>
+                        </h2>
+                        <div id="collapseBCC" class="accordion-collapse collapse" aria-labelledby="headingBCC" data-bs-parent="#skinCancerTypesAccordion">
+                        <div class="accordion-body">
+                            Basal cell carcinoma is the most common type of skin cancer. It usually appears as a slightly transparent or pearly/waxy bump, or a flat flesh-colored or brown scar-like lesion. BCC most often occurs on sun-exposed areas of your body, such as your face and neck. This cancer grows slowly and rarely spreads to other parts of the body, but it can invade surrounding tissue and cause disfigurement if left untreated.
+                        </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="headingSCC">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSCC" aria-expanded="false" aria-controls="collapseSCC">
+                            <strong>Squamous Cell Carcinoma (SCC)</strong>
+                        </button>
+                        </h2>
+                        <div id="collapseSCC" class="accordion-collapse collapse" aria-labelledby="headingSCC" data-bs-parent="#skinCancerTypesAccordion">
+                        <div class="accordion-body">
+                            Squamous cell carcinoma is the second most common type of skin cancer. It often appears as a firm, red nodule, a flat lesion with a scaly, crusted surface, or a sore that doesn't heal. SCC typically occurs on sun-exposed areas of the body, such as the face, ears, and hands. While not as dangerous as melanoma, SCC can spread if left untreated.
+                        </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="headingAK">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseAK" aria-expanded="false" aria-controls="collapseAK">
+                            <strong>Actinic Keratosis (AK)</strong>
+                        </button>
+                        </h2>
+                        <div id="collapseAK" class="accordion-collapse collapse" aria-labelledby="headingAK" data-bs-parent="#skinCancerTypesAccordion">
+                        <div class="accordion-body">
+                            Actinic Keratosis is a pre-cancerous growth that typically appears as rough, scaly patches on sun-exposed areas of the skin. These lesions are considered precursors to squamous cell carcinoma and should be monitored closely. Early treatment can prevent their progression to skin cancer.
+                        </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="headingBKL">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseBKL" aria-expanded="false" aria-controls="collapseBKL">
+                            <strong>Benign Keratosis-like Lesions (BKL)</strong>
+                        </button>
+                        </h2>
+                        <div id="collapseBKL" class="accordion-collapse collapse" aria-labelledby="headingBKL" data-bs-parent="#skinCancerTypesAccordion">
+                        <div class="accordion-body">
+                            This category includes several types of non-cancerous (benign) skin growths such as seborrheic keratoses, solar lentigos, and lichen-planus like keratoses. While these growths are harmless, they can sometimes resemble more serious conditions and should be evaluated by a healthcare provider for proper diagnosis.
+                        </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="headingDF">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseDF" aria-expanded="false" aria-controls="collapseDF">
+                            <strong>Dermatofibroma (DF)</strong>
+                        </button>
+                        </h2>
+                        <div id="collapseDF" class="accordion-collapse collapse" aria-labelledby="headingDF" data-bs-parent="#skinCancerTypesAccordion">
+                        <div class="accordion-body">
+                            Dermatofibroma is a common benign skin growth that usually appears as a small, firm bump on the skin. These growths are typically brown to reddish in color and are most common on the legs. While harmless, they can sometimes be confused with other types of skin lesions.
+                        </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="headingVASC">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseVASC" aria-expanded="false" aria-controls="collapseVASC">
+                            <strong>Vascular Lesions (VASC)</strong>
+                        </button>
+                        </h2>
+                        <div id="collapseVASC" class="accordion-collapse collapse" aria-labelledby="headingVASC" data-bs-parent="#skinCancerTypesAccordion">
+                        <div class="accordion-body">
+                            Vascular lesions are growths made up of blood vessels. These include conditions like cherry angiomas, angiokeratomas, and pyogenic granulomas. While most vascular lesions are benign, some may require treatment for cosmetic reasons or if they cause discomfort.
+                        </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="headingNevus">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseNevus" aria-expanded="false" aria-controls="collapseNevus">
+                            <strong>Nevus (Mole)</strong>
+                        </button>
+                        </h2>
+                        <div id="collapseNevus" class="accordion-collapse collapse" aria-labelledby="headingNevus" data-bs-parent="#skinCancerTypesAccordion">
+                        <div class="accordion-body">
+                            A nevus, commonly known as a mole, is a usually benign growth of melanocytes (pigment-producing cells). While most moles are harmless, it's important to monitor them for changes using the ABCDE rule, as changes could indicate developing melanoma. Some people are born with moles (congenital nevi), while others develop them over time.
+                        </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="headingUnknown">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseUnknown" aria-expanded="false" aria-controls="collapseUnknown">
+                            <strong>Unknown/Other</strong>
+                        </button>
+                        </h2>
+                        <div id="collapseUnknown" class="accordion-collapse collapse" aria-labelledby="headingUnknown" data-bs-parent="#skinCancerTypesAccordion">
+                        <div class="accordion-body">
+                            Some skin lesions may not clearly fit into the above categories or may require additional examination for proper classification. If our system identifies a lesion as "unknown," or if you're uncertain about any skin changes, it's important to consult with a healthcare provider for proper evaluation and diagnosis.
+                        </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="warning-signs" class="mb-5">
+                <h2><i class="bi bi-eye me-2"></i>Warning Signs (ABCDEs of Melanoma)</h2>
+                <p>Regularly check your skin for new spots or changes in existing moles. The ABCDE rule is a helpful guide for identifying potential signs of melanoma:</p>
+                <ul>
+                    <li><strong>A - Asymmetry:</strong> One half of the mole doesn't match the other half.</li>
+                    <li><strong>B - Border:</strong> The edges are irregular, ragged, notched, or blurred.</li>
+                    <li><strong>C - Color:</strong> The color is not uniform and may include different shades of brown or black, sometimes with patches of pink, red, white, or blue.</li>
+                    <li><strong>D - Diameter:</strong> The spot is larger than 6 millimeters across (about the size of a pencil eraser), although melanomas can sometimes be smaller.</li>
+                    <li><strong>E - Evolving:</strong> The mole is changing in size, shape, or color over time. Also look for new symptoms like itching or bleeding.</li>
+                </ul>
+                 <p>Other skin cancers (BCC, SCC) might appear as persistent sores that don't heal, reddish or scaly patches, shiny bumps, or growths with raised borders or a central indentation.</p>
+            </section>
+
+            <section id="risk-factors" class="mb-5">
+                <h2><i class="bi bi-shield-shaded me-2"></i>Risk Factors</h2>
+                <p>Several factors can increase your risk of developing skin cancer, including:</p>
+                <ul>
+                    <li>Excessive exposure to ultraviolet (UV) radiation from the sun or artificial sources like tanning beds.</li>
+                    <li>Fair skin (that burns easily, tans poorly).</li>
+                    <li>A history of sunburns, especially during childhood or adolescence.</li>
+                    <li>Having numerous moles or atypical (unusual) moles.</li>
+                    <li>A personal or family history of skin cancer.</li>
+                    <li>A weakened immune system.</li>
+                    <li>Older age (though skin cancer can also occur in younger people).</li>
+                    <li>Exposure to certain substances, such as arsenic.</li>
+                </ul>
+            </section>
+
+            <section id="importance" class="mb-5">
+                 <h2><i class="bi bi-check-circle me-2"></i>Importance of Early Detection</h2>
+                 <p>Finding skin cancer in its early stages greatly increases the chances of successful treatment and reduces the risk of complications or spread, especially for melanoma.</p>
+                 <p>Perform regular self-skin exams to become familiar with your skin and notice any changes. Additionally, schedule regular professional skin examinations with a dermatologist, particularly if you are at high risk.</p>
+            </section>
+
+            <section id="disclaimer-info" class="alert alert-warning">
+                <h4 class="alert-heading"><i class="bi bi-exclamation-triangle-fill me-2"></i>Medical Disclaimer</h4>
+                <p>The information provided on this page is for general knowledge and informational purposes only, and does not constitute medical advice. It is essential to consult with a qualified healthcare professional for any health concerns or before making any decisions related to your health or treatment.</p>
+                <p>This website's tool is an educational aid and <strong>cannot</strong> replace a diagnosis by a medical professional. Do not disregard professional medical advice or delay in seeking it because of something you have read here.</p>
+                <p>For more trustworthy information, you can visit sites like:
+                    <ul>
+                        <li><a href="https://www.who.int/news-room/fact-sheets/detail/ultraviolet-radiation" target="_blank" rel="noopener noreferrer">World Health Organization (WHO) - UV Radiation</a></li>
+                        <li><a href="https://www.aad.org/public/diseases/skin-cancer" target="_blank" rel="noopener noreferrer">American Academy of Dermatology (AAD) - Skin Cancer</a></li>
+                        <li><a href="https://www.cancer.org/cancer/types/skin-cancer.html" target="_blank" rel="noopener noreferrer">American Cancer Society - Skin Cancer</a></li>
+                        <!-- Add links to relevant local organizations if available -->
+                    </ul>
+                </p>
+            </section>
+
+        </main>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer text-center mt-auto">
+        <div class="container">
+            <p class="mb-0">&copy; 2024 Melanoma Predictor. All rights reserved. Developed by Arya Veda Alviantoro.</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html> 
