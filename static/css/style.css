@@ -1,39 +1,165 @@
-/* Basic Reset & Font */
+/* Import Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Roboto:wght@300;400;500&display=swap');
+
+/* Reset and Base Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
 body {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-    color: #212529; /* Default Bootstrap text color */
+    font-family: 'Roboto', sans-serif;
+    color: #333;
+    line-height: 1.6;
     background-color: #f8f9fa; /* Light background */
     padding-top: 70px; /* Adjust based on final navbar height */
 }
 
-/* Navbar */
+/* Navigation Styles */
 .navbar {
-    background-color: #ffffff !important; /* White navbar */
-    border-bottom: 1px solid #dee2e6; /* Subtle border */
-    box-shadow: 0 2px 4px rgba(0,0,0,.04);
-    padding-top: 0.75rem; /* Slightly more padding */
-    padding-bottom: 0.75rem;
-}
-
-.navbar-brand img {
-    max-height: 35px; /* Slightly larger logo */
+    background-color: #ffffff;
+    padding: 1rem 2rem;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
 .navbar-brand {
-    font-weight: 600;
-    color: #212529 !important;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 700;
+    font-size: 24px;
+    color: #4AC1B8 !important;
 }
 
 .nav-link {
-    color: #495057 !important; /* Slightly muted link color */
-    font-weight: 500;
-    padding-left: 1rem !important;
-    padding-right: 1rem !important;
+    font-family: 'Roboto', sans-serif;
+    font-size: 16px;
+    color: #4a4a4a !important;
+    margin: 0 10px;
+    transition: color 0.3s ease;
 }
 
-.nav-link:hover,
-.nav-link.active {
-    color: #0d6efd !important; /* Bootstrap primary blue for active/hover */
+.nav-link:hover {
+    color: #4AC1B8 !important;
+}
+
+/* Hero Section Styles */
+.hero-section {
+    background-color: #4AC1B8;
+    padding: 160px 0 120px;
+    position: relative;
+    overflow: hidden;
+}
+
+.hero-section::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 100px;
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 320'%3E%3Cpath fill='%23ffffff' fill-opacity='1' d='M0,96L48,112C96,128,192,160,288,160C384,160,480,128,576,112C672,96,768,96,864,112C960,128,1056,160,1152,160C1248,160,1344,128,1392,112L1440,96L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z'%3E%3C/path%3E%3C/svg%3E") no-repeat bottom;
+    background-size: cover;
+}
+
+.hero-content {
+    position: relative;
+    z-index: 1;
+}
+
+.hero-title {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 700;
+    font-size: 48px;
+    color: #ffffff;
+    margin-bottom: 20px;
+    line-height: 1.2;
+}
+
+.hero-text {
+    font-family: 'Roboto', sans-serif;
+    font-size: 18px;
+    color: rgba(255, 255, 255, 0.9);
+    margin-bottom: 30px;
+    max-width: 600px;
+}
+
+.btn-primary {
+    background-color: #ffffff;
+    color: #4AC1B8;
+    border: none;
+    padding: 12px 32px;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 600;
+    font-size: 16px;
+    border-radius: 25px;
+    transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+    background-color: #e6fffd;
+    color: #4AC1B8;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(74, 193, 184, 0.2);
+}
+
+/* Features Section */
+.features-section {
+    padding: 80px 0;
+    background-color: #ffffff;
+}
+
+.feature-icon {
+    font-size: 2.5rem;
+    color: #4AC1B8;
+    margin-bottom: 20px;
+}
+
+.feature-title {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 600;
+    font-size: 24px;
+    color: #333;
+    margin-bottom: 15px;
+}
+
+.feature-text {
+    font-family: 'Roboto', sans-serif;
+    font-size: 16px;
+    color: #666;
+}
+
+/* About Section */
+.about-section {
+    background-color: #f8f9fa;
+    padding: 80px 0;
+}
+
+.about-title {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 600;
+    font-size: 32px;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+.about-text {
+    font-family: 'Roboto', sans-serif;
+    font-size: 16px;
+    color: #666;
+    margin-bottom: 20px;
+}
+
+/* Footer */
+.footer {
+    background-color: #ffffff;
+    padding: 20px 0;
+    border-top: 1px solid #eee;
+}
+
+.footer p {
+    font-family: 'Roboto', sans-serif;
+    font-size: 14px;
+    color: #666;
 }
 
 /* Sections */
@@ -44,22 +170,6 @@ body {
 h1, h2, h3, h4, h5, h6 {
     font-weight: 600;
     margin-bottom: 1rem;
-}
-
-/* Footer */
-footer.footer {
-    background-color: #e9ecef; /* Lighter footer background */
-    color: #495057; /* Muted text color */
-    padding: 2rem 0;
-    margin-top: 4rem;
-    border-top: 1px solid #dee2e6;
-}
-
-/* Buttons (example) */
-.btn-primary {
-    /* Add custom styles if needed, or rely on Bootstrap */
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    font-weight: 500;
 }
 
 /* Profile Picture */
@@ -76,34 +186,6 @@ footer.footer {
     border: none;
     box-shadow: 0 4px 12px rgba(0,0,0,.08);
     border-radius: 0.5rem; /* Softer corners */
-}
-
-/* Hero Section Styling */
-.hero-section {
-    position: relative; /* Needed for the overlay */
-    background-image: url('../images/backgroundimageiguess.jpg'); /* Relative path from css file */
-    background-size: cover;
-    background-position: center center;
-    color: #ffffff; /* White text for contrast */
-    padding: 100px 0; /* Increase padding for better visual */
-    text-align: center;
-}
-
-.hero-section::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent black overlay */
-    z-index: 1; /* Place overlay below content */
-}
-
-/* Ensure hero content is above the overlay */
-.hero-section .container {
-    position: relative;
-    z-index: 2;
 }
 
 /* Styles specific to predict.html */

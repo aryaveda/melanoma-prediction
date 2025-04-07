@@ -3,19 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Welcome to Melanoma Prediction</title>
+    <title>Melanoma Predict - AI-Powered Skin Lesion Analysis</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
     <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
-<body class="d-flex flex-column min-vh-100">
+<body>
     <!-- Navigation Bar -->
     <nav class="navbar navbar-expand-lg fixed-top">
-        <div class="container-fluid">
+        <div class="container">
             <a class="navbar-brand" href="/">
                 <img src="{{ url_for('static', filename='images/logo512.png') }}" alt="Logo" height="30" class="d-inline-block align-text-top me-2">
-                Melanoma Predictor
+                Melanoma Predict
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
@@ -34,7 +35,6 @@
                     <li class="nav-item">
                         <a class="nav-link" href="/skin-info">Skin Info</a>
                     </li>
-                    <!-- Add other links here if needed -->
                 </ul>
             </div>
         </div>
@@ -43,47 +43,57 @@
     <!-- Hero Section -->
     <section class="hero-section">
         <div class="container">
-            <h1 class="display-4">Welcome to the Melanoma Prediction Tool</h1>
-            <p class="lead">Utilizing AI to assist in the early detection of skin lesions.</p>
-            <a href="/predictor" class="btn btn-primary btn-lg">Get Started</a>
+            <div class="row">
+                <div class="col-lg-7">
+                    <div class="hero-content">
+                        <h1 class="hero-title">AI-Powered Skin Lesion Analysis</h1>
+                        <p class="hero-text">Experience advanced skin lesion analysis powered by artificial intelligence. Our tool helps identify potential skin conditions with high accuracy, supporting early detection and better health outcomes.</p>
+                        <a href="/predictor" class="btn btn-primary">Get Started</a>
+                    </div>
+                </div>
+            </div>
         </div>
     </section>
 
     <!-- Features Section -->
-    <section class="container py-5">
-        <div class="row text-center">
-            <div class="col-md-4">
-                <i class="bi bi-image feature-icon mb-3"></i> <!-- Placeholder for Bootstrap Icon -->
-                <h3>Upload Image</h3>
-                <p>Easily upload images of skin lesions for analysis.</p>
-            </div>
-            <div class="col-md-4">
-                <i class="bi bi-cpu feature-icon mb-3"></i> <!-- Placeholder for Bootstrap Icon -->
-                <h3>AI Analysis</h3>
-                <p>Our advanced model analyzes the image to predict potential conditions.</p>
-            </div>
-            <div class="col-md-4">
-                <i class="bi bi-clipboard-data feature-icon mb-3"></i> <!-- Placeholder for Bootstrap Icon -->
-                <h3>Get Insights</h3>
-                <p>Receive predictions and visual feedback to understand the analysis.</p>
+    <section class="features-section">
+        <div class="container">
+            <div class="row text-center">
+                <div class="col-md-4">
+                    <i class="bi bi-upload feature-icon"></i>
+                    <h3 class="feature-title">Easy Upload</h3>
+                    <p class="feature-text">Simply upload an image of the skin lesion you want to analyze. Our system accepts various image formats.</p>
+                </div>
+                <div class="col-md-4">
+                    <i class="bi bi-cpu feature-icon"></i>
+                    <h3 class="feature-title">Smart Analysis</h3>
+                    <p class="feature-text">Our advanced AI model analyzes the image using deep learning technology to identify potential conditions.</p>
+                </div>
+                <div class="col-md-4">
+                    <i class="bi bi-graph-up feature-icon"></i>
+                    <h3 class="feature-title">Instant Results</h3>
+                    <p class="feature-text">Receive detailed analysis results instantly, helping you make informed decisions about your health.</p>
+                </div>
             </div>
         </div>
     </section>
 
     <!-- About Section -->
-    <section class="bg-light py-5">
+    <section class="about-section">
         <div class="container">
-            <h2>About This Tool</h2>
-            <p>This tool uses a sophisticated deep learning model (combining EfficientNet and Vision Transformer) trained on a large dataset of skin lesion images. It aims to provide a preliminary analysis and highlight areas of interest.</p>
-            <p class="text-danger"><strong>Disclaimer:</strong> This tool is for informational and educational purposes only and does not substitute professional medical advice or diagnosis. Always consult a qualified healthcare provider for any health concerns.</p>
+            <h2 class="about-title">About Our Technology</h2>
+            <p class="about-text">Our tool combines EfficientNet and Vision Transformer technologies to provide accurate skin lesion analysis. Trained on extensive datasets, it can identify various types of skin conditions.</p>
+            <div class="alert alert-warning">
+                <h4 class="alert-heading"><i class="bi bi-exclamation-triangle-fill me-2"></i>Important Notice</h4>
+                <p class="mb-0">This tool is for educational purposes only and does not replace professional medical advice. Always consult a qualified healthcare provider for proper diagnosis and treatment.</p>
+            </div>
         </div>
     </section>
 
     <!-- Footer -->
-    <footer class="footer text-center mt-auto">
+    <footer class="footer text-center">
         <div class="container">
-            <p class="mb-0">&copy; 2024 Melanoma Predictor. All rights reserved. Developed by Arya Veda Alviantoro.</p>
-            <!-- Add links or other footer content here -->
+            <p class="mb-0">&copy; 2024 Melanoma Predict. All rights reserved. Developed by Arya Veda Alviantoro.</p>
         </div>
     </footer>
 
