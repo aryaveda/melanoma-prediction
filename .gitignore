@@ -1,2 +1,5 @@
 # Ignore the specific model file
 beneran/effnetb5_384_9c_50epo_ext_BEST_epoch48.pth
+effnetb5_384_9c_50epo_ext_BEST_epoch48.pth
+.pth
+F:/Kodingan/melanomaPredict/beneran/effnetb5_384_9c_50epo_ext_BEST_epoch48.pth
