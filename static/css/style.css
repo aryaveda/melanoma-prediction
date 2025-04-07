@@ -1,7 +1,7 @@
 /* Import Google Fonts */
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Roboto:wght@300;400;500&display=swap');
 
-/* Reset and Base Styles */
+/* Reset and Base Styles - Revised Dark Theme */
 * {
     margin: 0;
     padding: 0;
@@ -10,41 +10,48 @@
 
 body {
     font-family: 'Roboto', sans-serif;
-    color: #333;
+    /* color: #e2e8f0; */
+    color: #dee2e6; /* Lighter grey text (Bootstrap dark default) */
     line-height: 1.6;
-    background-color: #f8f9fa; /* Light background */
-    padding-top: 70px; /* Adjust based on final navbar height */
+    /* background-color: #1a202c; */
+    background-color: #212529; /* Standard dark grey (Bootstrap dark body) */
+    padding-top: 70px; 
 }
 
-/* Navigation Styles */
+/* Navigation Styles - Revised Dark Theme */
 .navbar {
-    background-color: #ffffff;
+    /* background-color: #2d3748; */
+    background-color: #343a40; /* Slightly lighter dark grey (Bootstrap dark navbar) */
     padding: 1rem 2rem;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    /* box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4); */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+    /* border-bottom: 1px solid #4a5568; */
+    border-bottom: 1px solid #495057; /* Darker border */
 }
 
 .navbar-brand {
     font-family: 'Montserrat', sans-serif;
     font-weight: 700;
     font-size: 24px;
-    color: #4AC1B8 !important;
+    color: #4AC1B8 !important; /* Keep teal accent */
 }
 
 .nav-link {
     font-family: 'Roboto', sans-serif;
     font-size: 16px;
-    color: #4a4a4a !important;
+    /* color: #a0aec0 !important; */
+    color: #adb5bd !important; /* Softer muted grey */
     margin: 0 10px;
     transition: color 0.3s ease;
 }
 
-.nav-link:hover {
-    color: #4AC1B8 !important;
+.nav-link:hover,
+.nav-link.active {
+    color: #4AC1B8 !important; /* Teal accent on hover/active */
 }
 
-/* Hero Section Styles */
+/* Hero Section Styles - Revised Dark Theme */
 .hero-section {
-    /* background-color: #4AC1B8; */ /* Replaced with background image */
     background-image: url('../images/backgroundimageiguess.jpg');
     background-size: cover;
     background-position: center center;
@@ -53,7 +60,6 @@ body {
     overflow: hidden;
 }
 
-/* Add overlay for text readability */
 .hero-section::before {
     content: '';
     position: absolute;
@@ -61,8 +67,8 @@ body {
     left: 0;
     right: 0;
     bottom: 0;
-    background-color: rgba(0, 0, 0, 0.4); /* Adjust opacity as needed */
-    z-index: 0; /* Behind the content */
+    background-color: rgba(0, 0, 0, 0.55); /* Adjusted overlay opacity */
+    z-index: 0;
 }
 
 .hero-section::after {
@@ -72,7 +78,9 @@ body {
     left: 0;
     width: 100%;
     height: 100px;
-    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 320'%3E%3Cpath fill='%23ffffff' fill-opacity='1' d='M0,96L48,112C96,128,192,160,288,160C384,160,480,128,576,112C672,96,768,96,864,112C960,128,1056,160,1152,160C1248,160,1344,128,1392,112L1440,96L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z'%3E%3C/path%3E%3C/svg%3E") no-repeat bottom;
+    /* Change fill color to match new body background */
+    /* background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 320'%3E%3Cpath fill='%231a202c' ...") */
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 320'%3E%3Cpath fill='%23212529' fill-opacity='1' d='M0,96L48,112C96,128,192,160,288,160C384,160,480,128,576,112C672,96,768,96,864,112C960,128,1056,160,1152,160C1248,160,1344,128,1392,112L1440,96L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z'%3E%3C/path%3E%3C/svg%3E") no-repeat bottom;
     background-size: cover;
 }
 
@@ -85,7 +93,7 @@ body {
     font-family: 'Montserrat', sans-serif;
     font-weight: 700;
     font-size: 48px;
-    color: #ffffff;
+    color: #ffffff; /* Keep white */
     margin-bottom: 20px;
     line-height: 1.2;
 }
@@ -93,18 +101,19 @@ body {
 .hero-text {
     font-family: 'Roboto', sans-serif;
     font-size: 18px;
-    color: rgba(255, 255, 255, 0.9);
+    /* color: rgba(226, 232, 240, 0.9); */
+    color: rgba(248, 249, 250, 0.9); /* Softer off-white */
     margin-bottom: 30px;
     max-width: 600px;
 }
 
+/* Buttons - Revised Dark Theme */
 .btn-primary {
-    /* background-color: #ffffff; */ /* Changed to solid teal */
-    /* color: #4AC1B8; */ /* Changed to white text */
     background-color: #4AC1B8;
-    color: #ffffff;
-    border: 2px solid #4AC1B8; /* Added border for consistency */
-    padding: 10px 30px; /* Adjusted padding */
+    /* color: #1a202c; */
+    color: #ffffff; /* White text on teal for better contrast */
+    border: 2px solid #4AC1B8;
+    padding: 10px 30px;
     font-family: 'Montserrat', sans-serif;
     font-weight: 600;
     font-size: 16px;
@@ -113,21 +122,18 @@ body {
 }
 
 .btn-primary:hover {
-    /* background-color: #e6fffd; */ /* Changed hover background */
-    /* color: #4AC1B8; */ /* Changed hover text */
-    background-color: #3aa8a0; /* Slightly darker teal */
-    color: #ffffff;
-    border-color: #3aa8a0; /* Match background */
+    background-color: #3aa8a0;
+    color: #ffffff; /* White text on hover */
+    border-color: #3aa8a0;
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(74, 193, 184, 0.3); /* Slightly adjusted shadow */
+    box-shadow: 0 4px 12px rgba(74, 193, 184, 0.3);
 }
 
-/* Secondary Button Style (e.g., for Reset) */
 .btn-secondary {
     background-color: transparent;
-    color: #4AC1B8;
+    color: #4AC1B8; /* Teal text */
     border: 2px solid #4AC1B8;
-    padding: 10px 30px; /* Slightly adjust padding to account for border */
+    padding: 10px 30px;
     font-family: 'Montserrat', sans-serif;
     font-weight: 600;
     font-size: 16px;
@@ -137,22 +143,23 @@ body {
 
 .btn-secondary:hover {
     background-color: #4AC1B8;
-    color: #ffffff;
+    /* color: #1a202c; */
+    color: #ffffff; /* White text on hover */
     border-color: #4AC1B8;
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(74, 193, 184, 0.2);
 }
 
-/* Features Section */
+/* Features Section - Revised Dark Theme */
 .features-section {
-    /* padding: 80px 0; */ /* Reduced top padding */
-    padding: 40px 0 80px; /* Reduced top padding, kept bottom padding */
-    background-color: #ffffff;
+    padding: 40px 0 80px;
+    /* background-color: #1a202c; */
+    background-color: #212529; /* Match body background */
 }
 
 .feature-icon {
     font-size: 2.5rem;
-    color: #4AC1B8;
+    color: #4AC1B8; /* Keep teal accent */
     margin-bottom: 20px;
 }
 
@@ -160,48 +167,60 @@ body {
     font-family: 'Montserrat', sans-serif;
     font-weight: 600;
     font-size: 24px;
-    color: #333;
+    /* color: #e2e8f0; */
+    color: #f8f9fa; /* Brighter text */
     margin-bottom: 15px;
 }
 
 .feature-text {
     font-family: 'Roboto', sans-serif;
     font-size: 16px;
-    color: #666;
+    /* color: #a0aec0; */
+    color: #adb5bd; /* Softer muted text */
 }
 
-/* About Section */
+/* About Section - Revised Dark Theme */
 .about-section {
-    background-color: #f8f9fa;
+    /* background-color: #2d3748; */
+    background-color: #343a40; /* Match navbar background */
     padding: 80px 0;
+    /* border-top: 1px solid #4a5568; */
+    /* border-bottom: 1px solid #4a5568; */
+    border-top: 1px solid #495057;
+    border-bottom: 1px solid #495057;
 }
 
 .about-title {
     font-family: 'Montserrat', sans-serif;
     font-weight: 600;
     font-size: 32px;
-    color: #333;
+    /* color: #e2e8f0; */
+    color: #f8f9fa; /* Brighter text */
     margin-bottom: 20px;
 }
 
 .about-text {
     font-family: 'Roboto', sans-serif;
     font-size: 16px;
-    color: #666;
+    /* color: #a0aec0; */
+    color: #adb5bd; /* Softer muted text */
     margin-bottom: 20px;
 }
 
-/* Footer */
+/* Footer - Revised Dark Theme */
 .footer {
-    background-color: #ffffff;
+    /* background-color: #2d3748; */
+    background-color: #343a40; /* Match navbar background */
     padding: 20px 0;
-    border-top: 1px solid #eee;
+    /* border-top: 1px solid #4a5568; */
+    border-top: 1px solid #495057;
 }
 
 .footer p {
     font-family: 'Roboto', sans-serif;
     font-size: 14px;
-    color: #666;
+    /* color: #a0aec0; */
+    color: #adb5bd; /* Softer muted text */
 }
 
 /* Sections */
@@ -212,6 +231,8 @@ body {
 h1, h2, h3, h4, h5, h6 {
     font-weight: 600;
     margin-bottom: 1rem;
+    /* color: #e2e8f0; */
+    color: #f8f9fa; /* Brighter heading color */
 }
 
 /* Profile Picture */
@@ -219,30 +240,55 @@ h1, h2, h3, h4, h5, h6 {
     width: 150px;
     height: 150px;
     object-fit: cover;
-    border: 3px solid #ffffff;
-    box-shadow: 0 4px 8px rgba(0,0,0,.1);
+    /* border: 3px solid #4a5568; */
+    border: 3px solid #495057; /* Darker border */
+    box-shadow: 0 4px 8px rgba(0,0,0,.3);
 }
 
-/* Card Style (example for potential future use) */
+/* Card Style - Revised Dark Theme */
 .card {
-    border: none;
-    box-shadow: 0 4px 12px rgba(0,0,0,.08);
-    border-radius: 0.5rem; /* Softer corners */
+    /* border: 1px solid #4a5568; */
+    border: 1px solid #495057;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5); /* Slightly stronger shadow */
+    border-radius: 0.5rem;
+    /* background-color: #2d3748; */
+    background-color: #343a40; /* Match navbar/section background */
+}
+.card-body {
+    /* color: #e2e8f0; */
+    color: #dee2e6; /* Match body text */
+}
+.card-title {
+    /* color: #e2e8f0; */
+    color: #f8f9fa; /* Brighter title */
 }
 
-/* Styles specific to predict.html */
+/* Styles specific to predict.html - Revised Dark Theme */
 .image-upload-container {
-    border: 2px dashed #ccc;
+    /* border: 2px dashed #4a5568; */
+    border: 2px dashed #495057;
     border-radius: 8px;
     padding: 20px;
     text-align: center;
     margin-bottom: 20px;
     cursor: pointer;
     transition: border-color 0.3s ease;
+    /* background-color: #2d3748; */
+    background-color: #343a40; /* Match card background */
 }
 
 .image-upload-container:hover {
-    border-color: #0d6efd;
+    border-color: #4AC1B8; /* Teal accent on hover */
+}
+
+.image-upload-container p,
+.image-upload-container small {
+    /* color: #a0aec0; */
+    color: #adb5bd; /* Softer muted text */
+}
+.image-upload-container svg {
+    /* fill: #a0aec0; */
+    fill: #adb5bd; /* Softer icon color */
 }
 
 #imagePreview {
@@ -251,43 +297,104 @@ h1, h2, h3, h4, h5, h6 {
     margin: 20px auto;
     display: none;
     border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    /* background-color: #4a5568; */
+    background-color: #495057; /* Darker placeholder background */
+}
+
+.form-label {
+    /* color: #a0aec0; */
+    color: #adb5bd; /* Softer label text */
+    margin-bottom: .5rem;
+}
+
+.form-control,
+.form-select {
+    /* background-color: #2d3748; */
+    background-color: #343a40;
+    /* color: #e2e8f0; */
+    color: #dee2e6;
+    /* border: 1px solid #4a5568; */
+    border: 1px solid #495057;
+}
+
+.form-control:focus,
+.form-select:focus {
+    /* background-color: #2d3748; */
+    background-color: #343a40;
+    /* color: #e2e8f0; */
+    color: #dee2e6;
+    border-color: #4AC1B8;
+    box-shadow: 0 0 0 0.25rem rgba(74, 193, 184, 0.25); /* Teal focus ring */
+}
+
+/* Adjust placeholder text color */
+.form-control::placeholder {
+  /* color: #718096; */
+  color: #6c757d; /* Bootstrap default dark placeholder */
+  opacity: 1; 
+}
+
+/* Adjust disabled state */
+.form-control:disabled, .form-control[readonly] {
+  /* background-color: #4a5568; */
+  background-color: #495057;
+  opacity: 0.7;
 }
 
 .prediction-card {
     display: none;
     margin-top: 20px;
-    /* Inherits card styling from general styles */
+    /* Inherits card styling */
 }
 
 .loading-spinner {
     display: none;
     margin: 20px auto;
 }
+.loading-spinner p {
+    /* color: #a0aec0; */
+     color: #adb5bd;
+}
 
 .error-message {
     display: none;
-    /* Using Bootstrap alert-danger class is likely better */
-    /* color: #dc3545; */
+    /* background-color: #5c1e24; */ /* Custom dark red */
+    /* color: #f1b4b9; */
+    /* border-color: #8f2d36; */
+    /* Use Bootstrap's default dark alert for better consistency */
+    background-color: #3a1a1f;
+    color: #f5c6cb;
+    border-color: #582830;
     margin-top: 10px;
 }
 
-.melanoma-warning {
-    background-color: #fff3cd;
-    border-left: 4px solid #ffc107;
+.melanoma-warning,
+.alert-warning {
+    /* background-color: #4a3a0a; */ /* Custom dark yellow */
+    /* color: #fbd38d; */
+    /* border-left: 4px solid #dd6b20; */
+    /* Use Bootstrap's default dark alert */
+    background-color: #33270b;
+    color: #ffeeba;
+    border-left: 4px solid #ffc107; /* Keep original border color */
     padding: 15px;
     margin-top: 10px;
 }
-
-/* Custom loading animation */
-.loading-icon {
-    font-size: 3rem; /* Make icon larger */
-    color: #0d6efd; /* Use primary color */
-    animation: pulse 1.5s infinite ease-in-out;
-    display: inline-block; /* Needed for transform */
+.alert-warning .alert-heading {
+    /* color: #fbd38d; */
+     color: #ffeeba;
 }
 
-@keyframes pulse {
+/* Custom loading animation - Keep teal color */
+.loading-icon {
+    font-size: 3rem;
+    color: #4AC1B8; /* Use teal accent */
+    animation: pulse 1.5s infinite ease-in-out;
+    display: inline-block;
+}
+
+@keyframes pulse { /* Keep pulse animation */
     0%, 100% {
         transform: scale(1);
         opacity: 1;
@@ -296,4 +403,43 @@ h1, h2, h3, h4, h5, h6 {
         transform: scale(1.2);
         opacity: 0.7;
     }
+}
+
+/* Accordion styles for skin_info.html - Revised Dark Theme */
+.accordion-item {
+    /* background-color: #2d3748; */
+    background-color: #343a40;
+    /* border: 1px solid #4a5568; */
+    border: 1px solid #495057;
+}
+
+.accordion-button {
+    /* background-color: #4a5568; */
+    background-color: #495057; /* Darker button background */
+    /* color: #e2e8f0; */
+    color: #dee2e6;
+}
+
+.accordion-button:not(.collapsed) {
+    background-color: #4AC1B8; /* Teal when expanded */
+    /* color: #1a202c; */
+    color: #ffffff; /* White text when expanded */
+    box-shadow: inset 0 -1px 0 rgba(0, 0, 0, .125);
+}
+
+.accordion-button:focus {
+    border-color: #4AC1B8;
+    box-shadow: 0 0 0 0.25rem rgba(74, 193, 184, 0.25);
+}
+
+.accordion-button::after {
+    /* Use Bootstrap's default dark mode arrow */
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23dee2e6'%3e%3cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3e%3c/svg%3e");
+}
+
+.accordion-body {
+    /* background-color: #2d3748; */
+    background-color: #343a40;
+    /* color: #a0aec0; */
+    color: #adb5bd;
 } 
