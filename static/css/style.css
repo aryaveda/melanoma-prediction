@@ -44,10 +44,25 @@ body {
 
 /* Hero Section Styles */
 .hero-section {
-    background-color: #4AC1B8;
+    /* background-color: #4AC1B8; */ /* Replaced with background image */
+    background-image: url('../images/backgroundimageiguess.jpg');
+    background-size: cover;
+    background-position: center center;
     padding: 160px 0 120px;
     position: relative;
     overflow: hidden;
+}
+
+/* Add overlay for text readability */
+.hero-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.4); /* Adjust opacity as needed */
+    z-index: 0; /* Behind the content */
 }
 
 .hero-section::after {
@@ -84,10 +99,12 @@ body {
 }
 
 .btn-primary {
-    background-color: #ffffff;
-    color: #4AC1B8;
-    border: none;
-    padding: 12px 32px;
+    /* background-color: #ffffff; */ /* Changed to solid teal */
+    /* color: #4AC1B8; */ /* Changed to white text */
+    background-color: #4AC1B8;
+    color: #ffffff;
+    border: 2px solid #4AC1B8; /* Added border for consistency */
+    padding: 10px 30px; /* Adjusted padding */
     font-family: 'Montserrat', sans-serif;
     font-weight: 600;
     font-size: 16px;
@@ -96,15 +113,40 @@ body {
 }
 
 .btn-primary:hover {
-    background-color: #e6fffd;
+    /* background-color: #e6fffd; */ /* Changed hover background */
+    /* color: #4AC1B8; */ /* Changed hover text */
+    background-color: #3aa8a0; /* Slightly darker teal */
+    color: #ffffff;
+    border-color: #3aa8a0; /* Match background */
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(74, 193, 184, 0.3); /* Slightly adjusted shadow */
+}
+
+/* Secondary Button Style (e.g., for Reset) */
+.btn-secondary {
+    background-color: transparent;
     color: #4AC1B8;
+    border: 2px solid #4AC1B8;
+    padding: 10px 30px; /* Slightly adjust padding to account for border */
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 600;
+    font-size: 16px;
+    border-radius: 25px;
+    transition: all 0.3s ease;
+}
+
+.btn-secondary:hover {
+    background-color: #4AC1B8;
+    color: #ffffff;
+    border-color: #4AC1B8;
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(74, 193, 184, 0.2);
 }
 
 /* Features Section */
 .features-section {
-    padding: 80px 0;
+    /* padding: 80px 0; */ /* Reduced top padding */
+    padding: 40px 0 80px; /* Reduced top padding, kept bottom padding */
     background-color: #ffffff;
 }
 
