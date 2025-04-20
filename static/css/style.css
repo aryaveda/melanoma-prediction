@@ -442,4 +442,14 @@ h1, h2, h3, h4, h5, h6 {
     background-color: #343a40;
     /* color: #a0aec0; */
     color: #adb5bd;
+}
+
+/* Ensure dynamically added prediction text is light */
+.prediction-card #predictionResult {
+    color: #dee2e6; /* Match body text */
+}
+
+/* Style muted text for dark mode */
+.text-muted {
+    color: #adb5bd !important; /* Softer muted text, !important might be needed if Bootstrap overrides */
 } 
