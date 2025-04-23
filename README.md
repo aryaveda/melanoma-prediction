@@ -11,7 +11,7 @@ melanomaPredict/
 ├── templates/            
 │   └── index.html        # Template halaman web
 └── model/                # Folder untuk menyimpan model weights
-    └── effnetb5_384_9c_50epo_ext_BEST_epoch48.pth  # Model weights
+    └── model.pth  # Model weights
 ```
 
 ## Setup
