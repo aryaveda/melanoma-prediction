@@ -40,7 +40,7 @@ melanomaPredict/
    Buka `app.py` dan sesuaikan path model:
 
    ```python
-   MODEL_PATH = 'path/to/your/effnetb5_384_9c_50epo_ext_BEST_epoch48.pth'
+   MODEL_PATH = 'path/to/your/model.pth'
    ```
 
    Pastikan file model weights tersedia di path yang ditentukan.
