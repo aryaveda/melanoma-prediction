@@ -1,6 +1,6 @@
 # Melanoma Prediction Web App
 
-Aplikasi web untuk prediksi melanoma menggunakan model hybrid EfficientNet-B5 + ViT dengan metadata.
+Aplikasi web untuk prediksi melanoma menggunakan model EfficientNetV2-S dengan metadata.
 
 ## Struktur File
 
