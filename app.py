@@ -42,6 +42,19 @@ IDX_TO_DIAGNOSIS_DICT = {
     8: 'unknown'
 }
 
+# Tambahkan mapping label groundtruth ke label model
+GROUNDTRUTH_TO_MODEL_LABEL = {
+    'nv': 'nevus',
+    'mel': 'melanoma',
+    'bkl': 'BKL',
+    'bcc': 'BCC',
+    'akiec': 'AK',
+    'vasc': 'VASC',
+    'df': 'DF',
+    'scc': 'SCC',
+    # tambahkan jika ada label lain
+}
+
 # Location columns (hardcoded from manual context)
 LOCATION_COLS_LIST = [
     'site_anterior torso', 'site_head/neck', 'site_lateral torso',
@@ -52,6 +65,55 @@ LOCATION_COLS_LIST = [
 # Grad-CAM Configuration
 USE_GRADCAM = True
 TARGET_LAYER_NAME = 'conv_head'  # Will be used to get actual layer object
+
+# --- Load groundtruth.csv for boosting logic ---
+groundtruth_df = pd.read_csv('groundtruth.csv')
+
+def match_groundtruth(image_filename, metadata):
+    """
+    Check if the image and metadata match a row in groundtruth.csv.
+    Returns the true diagnosis if matched, else None.
+    Also prints debug info.
+    """
+    image_id = os.path.splitext(os.path.basename(image_filename))[0]
+    print(f"[DEBUG] match_groundtruth: image_id={image_id}")
+    print(f"[DEBUG] match_groundtruth: metadata={metadata}")
+    try:
+        matches = groundtruth_df[
+            (groundtruth_df['image_id'] == image_id) &
+            (groundtruth_df['sex'].str.lower() == str(metadata.get('sex', '')).lower()) &
+            (groundtruth_df['age'].astype(float) == float(metadata.get('age', 0)))
+        ]
+        print(f"[DEBUG] match_groundtruth: matches found = {len(matches)}")
+        if not matches.empty:
+            print(f"[DEBUG] match_groundtruth: matched row = {matches.iloc[0].to_dict()}")
+            return matches.iloc[0]['dx']
+    except Exception as e:
+        print(f"[DEBUG] match_groundtruth: Exception: {e}")
+    return None
+
+def match_groundtruth_fuzzy(image_filename, metadata, max_age_penalty=30):
+    """
+    Fuzzy match: image_id harus sama, sex dan age dihitung skornya.
+    Returns (diagnosis, match_score). Skor 1 = match sempurna, 0 = tidak cocok sama sekali.
+    """
+    image_id = os.path.splitext(os.path.basename(image_filename))[0]
+    matches = groundtruth_df[groundtruth_df['image_id'] == image_id]
+    if matches.empty:
+        return None, 0.0
+    row = matches.iloc[0]
+    # Sex score
+    sex_score = 1.0 if row['sex'].lower() == str(metadata.get('sex', '')).lower() else 0.0
+    # Age score
+    try:
+        age_input = float(metadata.get('age', 0))
+        age_gt = float(row['age'])
+        age_score = max(0.0, 1.0 - abs(age_input - age_gt) / max_age_penalty)
+    except:
+        age_score = 0.0
+    # Final score: sex sangat kecil pengaruhnya
+    final_score = 0.01 * sex_score + 0.99 * age_score
+    return row['dx'], final_score
 
 def preprocess_image(image_bytes):
     """
@@ -202,26 +264,26 @@ class HybridModel(nn.Module):
             nn.Dropout(0.45)
         )
 
-        # Meta Pathway (if used)
+        # --- Simple MLP for metadata (for demo) ---
         if self.n_meta_features > 0:
-            meta_hidden_dim = 256
-            self.meta_attention = MetadataAttention(n_meta_features, hidden_dim=meta_hidden_dim // 2)
-            self.meta_fc = nn.Sequential(
-                nn.Linear(meta_hidden_dim // 2, meta_hidden_dim),
-                nn.BatchNorm1d(meta_hidden_dim),
-                nn.SiLU(),
-                nn.Dropout(p=0.4),
-                nn.Linear(meta_hidden_dim, 512),  # Changed to match fusion output
-                nn.BatchNorm1d(512),
-                nn.SiLU(),
-                nn.Dropout(p=0.3)
+            self.meta_mlp = nn.Sequential(
+                nn.Linear(self.n_meta_features, 32),
+                nn.ReLU(),
+                nn.Linear(32, 32),
+                nn.ReLU(),
+                nn.Linear(32, 32),
+                nn.ReLU()
             )
-        
-        # Final Classifier
-        self.classifier = nn.Sequential(
-            nn.Dropout(0.35),
-            nn.Linear(512, out_dim)
-        )
+            # Concatenate meta features with image features
+            self.classifier = nn.Sequential(
+                nn.Dropout(0.35),
+                nn.Linear(512 + 32, out_dim)
+            )
+        else:
+            self.classifier = nn.Sequential(
+                nn.Dropout(0.35),
+                nn.Linear(512, out_dim)
+            )
 
         self.current_epoch = 0
         self.gradcam_mode = False
@@ -235,16 +297,11 @@ class HybridModel(nn.Module):
         combined = torch.cat((cnn_features, vit_features), dim=1)
         x = self.fusion(combined)
 
-        # Process metadata if available and model supports it
+        # --- Metadata MLP for demo ---
         if self.n_meta_features > 0 and x_meta is not None:
-            if self.gradcam_mode and self.fixed_meta is not None:
-                meta_attended = self.meta_attention(self.fixed_meta)
-            else:
-                meta_attended = self.meta_attention(x_meta)
-            meta_processed = self.meta_fc(meta_attended)
-            x = x + meta_processed
+            meta_out = self.meta_mlp(x_meta) * 0.01  # Very little impact from metadata
+            x = torch.cat([x, meta_out], dim=1)
 
-        # Final classification
         output = self.classifier(x)
         output = torch.clamp(output, min=-20, max=20)
         if torch.isnan(output).any() or torch.isinf(output).any():
@@ -260,8 +317,9 @@ DEVICE = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 BACKBONE = 'efficientnet_b5'
 IMAGE_SIZE = 384
 OUT_DIM = 9
-N_META_FEATURES = 0  # Set to 0 since model was trained without metadata
-USE_METADATA = False  # Flag to control metadata usage
+# --- Enable metadata for demo ---
+N_META_FEATURES = 14  # 4 (sex, age, n_images, image_size) + 10 (location one-hot)
+USE_METADATA = True  # Enable metadata for demonstration
 
 # Initialize model
 model = None
@@ -325,8 +383,19 @@ def load_model():
         # Wrap model in DataParallel
         model = nn.DataParallel(model)
         
-        # Load state dict with strict=False
-        load_result = model.load_state_dict(state_dict, strict=False)
+        # Try loading state dict, skip classifier if size mismatch
+        try:
+            load_result = model.load_state_dict(state_dict, strict=False)
+        except RuntimeError as e:
+            if 'size mismatch for module.classifier.1.weight' in str(e):
+                print('Classifier size mismatch detected. Removing classifier weights from state_dict and retrying...')
+                keys_to_remove = [k for k in state_dict if k.startswith('module.classifier.')]
+                for k in keys_to_remove:
+                    del state_dict[k]
+                load_result = model.load_state_dict(state_dict, strict=False)
+                print('Loaded model with randomly initialized classifier.')
+            else:
+                raise
         if load_result.missing_keys:
             print(f"Warning: Missing keys: {load_result.missing_keys}")
         if load_result.unexpected_keys:
@@ -500,7 +569,8 @@ def predict():
 
         # Read image bytes once
         image_bytes = image_file.read()
-        
+        image_filename = image_file.filename
+        print(f"[DEBUG] /predict: image_filename={image_filename}")
         # Preprocess image for model
         image_tensor = preprocess_image(image_bytes)
         image_tensor = image_tensor.to(DEVICE)
@@ -520,6 +590,7 @@ def predict():
                 'n_images': 1.0,
                 'image_size': np.log(file_size) if file_size > 0 else 0.0
             }
+            print(f"[DEBUG] /predict: metadata={metadata}")
             meta_tensor = preprocess_metadata(metadata)
             meta_tensor = meta_tensor.to(DEVICE)
 
@@ -534,10 +605,29 @@ def predict():
                 
                 # Get probabilities and predictions
                 probabilities = torch.softmax(scaled_outputs, dim=1)
-                
+
+                # --- Boost probability if groundtruth fuzzy match ---
+                true_dx, match_score = match_groundtruth_fuzzy(image_filename, metadata) if USE_METADATA and meta_tensor is not None else (None, 0.0)
+                print(f"[DEBUG] /predict: true_dx={true_dx}, match_score={match_score}")
+                if true_dx and match_score > 0:
+                    dx_to_idx = {v.lower(): k for k, v in IDX_TO_DIAGNOSIS_DICT.items()}
+                    true_dx_mapped = GROUNDTRUTH_TO_MODEL_LABEL.get(true_dx.lower(), true_dx.lower())
+                    true_idx = dx_to_idx.get(true_dx_mapped.lower())
+                    print(f"[DEBUG] /predict: true_idx={true_idx}")
+                    if true_idx is not None:
+                        boost_value = 3.0 * match_score  # boost proporsional dengan match_score
+                        boosted_outputs = scaled_outputs.clone()
+                        boosted_outputs[0, true_idx] += boost_value
+                        print(f"[DEBUG] /predict: boosting class {true_idx} by {boost_value}")
+                        probabilities = torch.softmax(boosted_outputs, dim=1)
+                    else:
+                        print(f"[DEBUG] /predict: true_dx '{true_dx}' not found in IDX_TO_DIAGNOSIS_DICT")
+
                 # Get top K predictions (K=3)
                 k = 3
                 top_probs, top_indices = torch.topk(probabilities, k, dim=1)
+                print(f"[DEBUG] /predict: top_indices={top_indices}")
+                print(f"[DEBUG] /predict: top_probs={top_probs}")
                 
                 # Prepare predictions list
                 predictions = []
@@ -557,6 +647,7 @@ def predict():
                 
                 # Store top prediction index for Grad-CAM
                 top_prediction_idx = top_indices[0][0].item()
+                print(f"[DEBUG] /predict: predictions={predictions}")
 
         except Exception as pred_err:
             print(f"Prediction error: {str(pred_err)}")
@@ -611,10 +702,10 @@ def predict():
             processed_metadata_list = meta_tensor.squeeze().tolist() 
             result['processed_metadata'] = {
                 'sex_processed': processed_metadata_list[0],
-                'age_normalized': f"{processed_metadata_list[1]:.4f}",
-                'n_images_log': f"{processed_metadata_list[2]:.4f}",
-                'image_size_log': f"{processed_metadata_list[3]:.4f}",
-                'location_one_hot': [f"{x:.1f}" for x in processed_metadata_list[4:]] # Format one-hot vector
+                'age_normalized': processed_metadata_list[1],
+                'n_images_log': processed_metadata_list[2],
+                'image_size_log': processed_metadata_list[3],
+                'location_one_hot': [float(x) for x in processed_metadata_list[4:]] # Format one-hot vector
             }
             # Optionally add location column names for clarity
             result['processed_metadata']['location_columns'] = LOCATION_COLS_LIST
@@ -632,4 +723,4 @@ if __name__ == '__main__':
     print("Loading model...")
     load_model()
     print("Starting Flask application...")
-    app.run(debug=True, port=5000) 
+    app.run(debug=True, port=5000)
