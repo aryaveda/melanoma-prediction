@@ -14,3 +14,4 @@ grad-cam>=1.5.5
 pytz>=2023.3
 tqdm>=4.65.0
 warmup-scheduler @ git+https://github.com/ildoonet/pytorch-gradual-warmup-lr.git
+gunicorn>=20.0.0
