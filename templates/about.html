@@ -63,13 +63,13 @@
                 <h2><i class="bi bi-diagram-3 me-2"></i>Model Architecture</h2>
                 <p>The core of this tool is a hybrid deep learning model designed to leverage both visual information from images and contextual information from patient metadata:</p>
                 <ul>
-                    <li><strong>Convolutional Neural Network (CNN):</strong> An EfficientNet (specifically, EfficientNet-B5) acts as the primary image feature extractor. EfficientNets are known for their balance of accuracy and computational efficiency. It processes the input image to capture visual patterns and textures relevant to lesion classification.</li>
-                    <li><strong>Vision Transformer (ViT):</strong> A small Vision Transformer operates in parallel with the CNN. ViTs process images by dividing them into patches and analyzing relationships between these patches, capturing global context that might be missed by the CNN.</li>
-                    <li><strong>Feature Fusion:</strong> Features extracted by the CNN and ViT are concatenated and passed through a fusion layer (a Multi-Layer Perceptron - MLP) to create a combined visual representation.</li>
+                    <li><strong>Convolutional Neural Network (CNN):</strong> An EfficientNetV2 (specifically, EfficientNetV2-M) acts as the primary image feature extractor. EfficientNetV2 models offer improved accuracy and training speed compared to the original EfficientNet family. It processes the input image to capture visual patterns and textures relevant to lesion classification.</li>
+                    <li><strong>Swin Transformer:</strong> A small Swin Transformer operates in parallel with the CNN. Swin Transformers process images using shifted windows, enabling hierarchical feature extraction and capturing both local and global context that might be missed by the CNN.</li>
+                    <li><strong>Feature Fusion:</strong> Features extracted by the CNN and Swin Transformer are concatenated and passed through a fusion layer (a Multi-Layer Perceptron - MLP) to create a combined visual representation.</li>
                     <li><strong>Metadata Integration (Conditional):</strong> If enabled (<code>USE_METADATA=True</code> in the configuration), patient metadata (age, sex, lesion location) is processed through a separate pathway involving an <strong>Attention Mechanism</strong>. This allows the model to weigh the importance of different metadata features. The processed metadata representation is then added to the fused visual features.</li>
                     <li><strong>Classifier:</strong> The final combined feature vector is fed into a classifier (another MLP) to produce the probability scores for each skin lesion category.</li>
                 </ul>
-                <p>This hybrid approach aims to capture both fine-grained local details (CNN) and broader global context (ViT), enhanced by relevant patient information when available.</p>
+                <p>This hybrid approach aims to capture both fine-grained local details (CNN) and broader global context (Swin Transformer), enhanced by relevant patient information when available.</p>
             </section>
 
             <section id="data" class="mb-5">
@@ -123,10 +123,10 @@
     <!-- Footer -->
     <footer class="footer text-center mt-auto">
         <div class="container">
-            <p class="mb-0">&copy; 2024 Melanoma Predictor. All rights reserved. Developed by Arya Veda Alviantoro.</p>
+            <p class="mb-0">&copy; 2025 Melanoma Predictor. All rights reserved. Developed by Arya Veda Alviantoro.</p>
         </div>
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
-</html> 
+</html>
