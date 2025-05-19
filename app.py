@@ -324,6 +324,26 @@ USE_METADATA = True  # Enable metadata for demonstration
 # Initialize model
 model = None
 
+import requests
+
+MODEL_PATH = 'effnetb5_384_9c_50epo_ext_BEST_epoch48.pth'
+MODEL_URL = 'https://drive.google.com/uc?id=1bBVTdWabFdkvcz_EKgFIz8JLWDfHwMuk'
+
+def download_model():
+    if not os.path.exists(MODEL_PATH):
+        print(f"Model file not found locally. Downloading from {MODEL_URL}...")
+        response = requests.get(MODEL_URL, stream=True)
+        if response.status_code == 200:
+            with open(MODEL_PATH, 'wb') as f:
+                for chunk in response.iter_content(chunk_size=8192):
+                    f.write(chunk)
+            print("Model downloaded successfully.")
+        else:
+            raise Exception(f"Failed to download model. Status code: {response.status_code}")
+
+# Call this function before loading the model
+download_model()
+
 def load_model():
     global model
     # Initialize model architecture
@@ -664,6 +684,7 @@ def predict():
         grad_cam_image = None
         # Ensure Grad-CAM uses unaltered predictions
         if USE_GRADCAM:
+            print("[DEBUG] Grad-CAM is enabled. Attempting to generate visualization...")
             try:
                 # Ensure model is still in eval mode
                 model.eval()
@@ -694,10 +715,13 @@ def predict():
                         device=DEVICE,
                         meta_tensor=meta_tensor_grad  # Use tensor that allows grads
                     )
+                    print("[DEBUG] Grad-CAM visualization generated successfully.")
             except Exception as cam_err:
-                print(f"Grad-CAM generation failed: {cam_err}")
+                print(f"[DEBUG] Grad-CAM generation failed: {cam_err}")
                 import traceback
                 traceback.print_exc()  # Print full traceback for CAM error
+        else:
+            print("[DEBUG] Grad-CAM is disabled.")
 
         # Prepare response
         result = {
@@ -736,4 +760,6 @@ if __name__ == '__main__':
     print("Loading model...")
     load_model()
     print("Starting Flask application...")
+    import sys
+    print(f"[DEBUG] Python executable: {sys.executable}")
     app.run(debug=True, port=5000)
