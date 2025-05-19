@@ -1,6 +1,6 @@
 # Melanoma Prediction Web App
 
-Aplikasi web untuk prediksi melanoma menggunakan model hybrid EfficientNet-B5 + ViT dengan metadata.
+Aplikasi web untuk prediksi melanoma menggunakan model EfficientNetV2-S dengan metadata.
 
 ## Struktur File
 
@@ -11,7 +11,7 @@ melanomaPredict/
 ├── templates/            
 │   └── index.html        # Template halaman web
 └── model/                # Folder untuk menyimpan model weights
-    └── effnetb5_384_9c_50epo_ext_BEST_epoch48.pth  # Model weights
+    └── model.pth  # Model weights
 ```
 
 ## Setup
@@ -40,7 +40,7 @@ melanomaPredict/
    Buka `app.py` dan sesuaikan path model:
 
    ```python
-   MODEL_PATH = 'path/to/your/effnetb5_384_9c_50epo_ext_BEST_epoch48.pth'
+   MODEL_PATH = 'path/to/your/model.pth'
    ```
 
    Pastikan file model weights tersedia di path yang ditentukan.
