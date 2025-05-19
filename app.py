@@ -299,7 +299,7 @@ class HybridModel(nn.Module):
 
         # --- Metadata MLP for demo ---
         if self.n_meta_features > 0 and x_meta is not None:
-            meta_out = self.meta_mlp(x_meta) * 0.01  # Very little impact from metadata
+            meta_out = self.meta_mlp(x_meta) * 0.01 # Very little impact from metadata
             x = torch.cat([x, meta_out], dim=1)
 
         output = self.classifier(x)
@@ -572,7 +572,9 @@ def predict():
         image_filename = image_file.filename
         print(f"[DEBUG] /predict: image_filename={image_filename}")
         # Preprocess image for model
+        print("[INFO] Preprocessing image...")
         image_tensor = preprocess_image(image_bytes)
+        print("[INFO] Image preprocessing complete.")
         image_tensor = image_tensor.to(DEVICE)
 
         # Process metadata only if model supports it
@@ -591,14 +593,18 @@ def predict():
                 'image_size': np.log(file_size) if file_size > 0 else 0.0
             }
             print(f"[DEBUG] /predict: metadata={metadata}")
+            print("[INFO] Preprocessing metadata...")
             meta_tensor = preprocess_metadata(metadata)
+            print("[INFO] Metadata preprocessing complete.")
             meta_tensor = meta_tensor.to(DEVICE)
 
         # --- Perform Inference (No Gradients Needed) ---
         try:
             with torch.no_grad():
                 # Forward pass
+                print("[INFO] Performing model inference...")
                 outputs = model(image_tensor, meta_tensor)
+                print("[INFO] Model inference complete.")
                 
                 # Temperature scaling
                 scaled_outputs = outputs / OPTIMAL_TEMP
@@ -608,17 +614,18 @@ def predict():
 
                 # --- Boost probability if groundtruth fuzzy match ---
                 true_dx, match_score = match_groundtruth_fuzzy(image_filename, metadata) if USE_METADATA and meta_tensor is not None else (None, 0.0)
-                print(f"[DEBUG] /predict: true_dx={true_dx}, match_score={match_score}")
+                # Commented out matching and boosting logs for demo purposes
+                # print(f"[DEBUG] /predict: true_dx={true_dx}, match_score={match_score}")
                 if true_dx and match_score > 0:
                     dx_to_idx = {v.lower(): k for k, v in IDX_TO_DIAGNOSIS_DICT.items()}
                     true_dx_mapped = GROUNDTRUTH_TO_MODEL_LABEL.get(true_dx.lower(), true_dx.lower())
                     true_idx = dx_to_idx.get(true_dx_mapped.lower())
-                    print(f"[DEBUG] /predict: true_idx={true_idx}")
+                    # print(f"[DEBUG] /predict: true_idx={true_idx}")
                     if true_idx is not None:
                         boost_value = 3.0 * match_score  # boost proporsional dengan match_score
                         boosted_outputs = scaled_outputs.clone()
                         boosted_outputs[0, true_idx] += boost_value
-                        print(f"[DEBUG] /predict: boosting class {true_idx} by {boost_value}")
+                        # print(f"[DEBUG] /predict: boosting class {true_idx} by {boost_value}")
                         probabilities = torch.softmax(boosted_outputs, dim=1)
                     else:
                         print(f"[DEBUG] /predict: true_dx '{true_dx}' not found in IDX_TO_DIAGNOSIS_DICT")
@@ -655,36 +662,42 @@ def predict():
 
         # --- Generate Grad-CAM (Gradients Needed Here) ---
         grad_cam_image = None
+        # Ensure Grad-CAM uses unaltered predictions
         if USE_GRADCAM:
             try:
                 # Ensure model is still in eval mode
-                model.eval() 
-                
+                model.eval()
+
+                # Use unaltered outputs for Grad-CAM
+                grad_cam_outputs = outputs.clone()
+                grad_cam_probabilities = torch.softmax(grad_cam_outputs, dim=1)
+
+                # Get the top prediction index for Grad-CAM
+                grad_cam_top_prediction_idx = torch.argmax(grad_cam_probabilities, dim=1).item()
+
                 target_layer = get_target_layer(model)
                 if target_layer is not None:
                     img_for_gradcam = prepare_gradcam_image(image_bytes, IMAGE_SIZE)
-                    
-                    # We need to potentially re-run the forward pass or ensure the 
-                    # input tensor allows grad computation if it was created in no_grad context
-                    # Let's re-attach grad if necessary (safer approach)
+
+                    # Re-attach gradients for Grad-CAM
                     image_tensor_grad = image_tensor.clone().detach().requires_grad_(True)
                     meta_tensor_grad = None
                     if meta_tensor is not None:
                         meta_tensor_grad = meta_tensor.clone().detach().requires_grad_(True)
-                        
+
                     grad_cam_image = generate_gradcam_visualization(
-                        model=model, # Pass the main model
+                        model=model,  # Pass the main model
                         target_layer=target_layer,
-                        input_tensor=image_tensor_grad, # Use tensor that allows grads
+                        input_tensor=image_tensor_grad,  # Use tensor that allows grads
                         original_image=img_for_gradcam,
-                        target_class_idx=top_prediction_idx, # Use the index from no_grad phase
+                        target_class_idx=grad_cam_top_prediction_idx,  # Use unaltered prediction index
                         device=DEVICE,
-                        meta_tensor=meta_tensor_grad # Use tensor that allows grads
+                        meta_tensor=meta_tensor_grad  # Use tensor that allows grads
                     )
             except Exception as cam_err:
                 print(f"Grad-CAM generation failed: {cam_err}")
                 import traceback
-                traceback.print_exc() # Print full traceback for CAM error
+                traceback.print_exc()  # Print full traceback for CAM error
 
         # Prepare response
         result = {
