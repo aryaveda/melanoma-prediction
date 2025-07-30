@@ -1,110 +1,188 @@
-# Melanoma Prediction Web App
+# Melanoma Prediction System
 
-Aplikasi web untuk prediksi melanoma menggunakan model EfficientNetV2-S dengan metadata.
+Sistem prediksi melanoma berbasis AI yang menggunakan model hybrid CNN-ViT untuk mendiagnosis berbagai jenis lesi kulit dengan akurasi tinggi.
 
-## Struktur File
+## 🎯 Fitur Utama
+
+- **Prediksi Multi-Kelas**: Mendiagnosis 9 jenis lesi kulit berbeda:
+  - AK (Actinic Keratosis)
+  - BCC (Basal Cell Carcinoma)
+  - BKL (Benign Keratosis-like Lesions)
+  - DF (Dermatofibroma)
+  - SCC (Squamous Cell Carcinoma)
+  - VASC (Vascular Lesions)
+  - Melanoma
+  - Nevus
+  - Unknown
+
+- **Model Hybrid**: Menggabungkan CNN (EfficientNet) dan Vision Transformer (ViT) untuk performa optimal
+- **Metadata Integration**: Menggunakan informasi usia dan jenis kelamin untuk meningkatkan akurasi prediksi
+- **Grad-CAM Visualization**: Menampilkan area yang menjadi fokus model dalam membuat prediksi
+- **Ground Truth Matching**: Sistem pencocokan dengan data ground truth untuk validasi
+- **Web Interface**: Antarmuka web yang user-friendly untuk upload gambar dan melihat hasil
+
+## 🚀 Teknologi yang Digunakan
+
+- **Backend**: Flask (Python)
+- **Deep Learning**: PyTorch, Timm, Transformers
+- **Computer Vision**: OpenCV, Albumentations
+- **Model Architecture**: EfficientNet-B5 + Vision Transformer
+- **Visualization**: Grad-CAM
+- **Deployment**: Vercel, Docker
+
+## 📋 Prerequisites
+
+- Python 3.8+
+- CUDA (opsional, untuk GPU acceleration)
+- Git
+
+## 🛠️ Instalasi
+
+### 1. Clone Repository
+```bash
+git clone <repository-url>
+cd melanomaPredict
+```
+
+### 2. Install Dependencies
+```bash
+pip install -r requirements.txt
+```
+
+### 3. Download Model
+Model akan otomatis di-download saat pertama kali menjalankan aplikasi, atau Anda dapat mengunduh manual:
+```bash
+# Model akan di-download ke folder models/
+# File: effnetb5_384_9c_50epo_ext_BEST_epoch48.pth
+```
+
+## 🏃‍♂️ Cara Menjalankan
+
+### Development Mode
+```bash
+python app.py
+```
+Aplikasi akan berjalan di `http://localhost:5000`
+
+### Production Mode
+```bash
+gunicorn app:app
+```
+
+### Docker
+```bash
+docker build -t melanoma-predict .
+docker run -p 5000:5000 melanoma-predict
+```
+
+## 📖 Cara Penggunaan
+
+1. **Buka Aplikasi**: Akses `http://localhost:5000`
+2. **Upload Gambar**: Pilih file gambar lesi kulit (format: JPG, PNG)
+3. **Input Metadata**: Masukkan usia dan pilih jenis kelamin
+4. **Prediksi**: Klik tombol "Predict" untuk mendapatkan hasil
+5. **Analisis**: Lihat hasil prediksi, confidence score, dan visualisasi Grad-CAM
+
+## 🏗️ Arsitektur Sistem
+
+### Model Architecture
+- **Backbone**: EfficientNet-B5 (CNN)
+- **Transformer**: Vision Transformer (ViT)
+- **Fusion**: Attention mechanism untuk menggabungkan fitur CNN dan ViT
+- **Metadata**: Attention layer untuk mengintegrasikan informasi usia dan jenis kelamin
+
+### Data Processing
+- **Image Preprocessing**: Resize, normalization, augmentation
+- **Metadata Processing**: Age normalization, sex encoding
+- **Ground Truth Matching**: Fuzzy matching dengan dataset ground truth
+
+### Web Interface
+- **Home**: Landing page dengan informasi sistem
+- **Predictor**: Halaman utama untuk prediksi
+- **About**: Informasi tentang proyek dan tim
+- **Skin Info**: Panduan tentang jenis-jenis lesi kulit
+
+## 📊 Performa Model
+
+- **Accuracy**: Tinggi pada dataset training
+- **Classes**: 9 kelas lesi kulit
+- **Input Size**: 384x384 pixels
+- **Augmentation**: Albumentations untuk training robustness
+
+## 🔧 Konfigurasi
+
+### Environment Variables
+```bash
+# Opsional: Set untuk production
+FLASK_ENV=production
+FLASK_DEBUG=0
+```
+
+### Model Configuration
+- **Image Size**: 384x384
+- **Batch Size**: Sesuai dengan GPU memory
+- **Learning Rate**: Optimized untuk training
+- **Temperature Scaling**: 1.0 (untuk calibration)
+
+## 📁 Struktur Proyek
 
 ```
 melanomaPredict/
-├── app.py                 # Aplikasi Flask
-├── requirements.txt       # Dependencies
-├── templates/            
-│   └── index.html        # Template halaman web
-└── model/                # Folder untuk menyimpan model weights
-    └── model.pth  # Model weights
+├── app.py                 # Main Flask application
+├── requirements.txt       # Python dependencies
+├── dockerfile            # Docker configuration
+├── vercel.json          # Vercel deployment config
+├── models/              # Model weights directory
+├── templates/           # HTML templates
+│   ├── index.html
+│   ├── predict.html
+│   ├── about.html
+│   └── skin_info.html
+├── static/              # Static files (CSS, JS, images)
+├── groundtruth.csv      # Ground truth dataset
+└── README.md           # This file
 ```
 
-## Setup
+## 🚀 Deployment
 
-1. **Persiapkan Environment**
+### Vercel
+Proyek sudah dikonfigurasi untuk deployment di Vercel:
+- `vercel.json`: Konfigurasi deployment
+- `runtime.txt`: Python version specification
+- `.vercelignore`: File yang di-exclude
 
-   ```bash
-   # Buat virtual environment
-   python -m venv venv
-   
-   # Aktifkan virtual environment
-   # Windows
-   venv\Scripts\activate
-   # Linux/Mac
-   source venv/bin/activate
-   ```
+### Docker
+```bash
+# Build image
+docker build -t melanoma-predict .
 
-2. **Install Dependencies**
+# Run container
+docker run -p 5000:5000 melanoma-predict
+```
 
-   ```bash
-   pip install -r requirements.txt
-   ```
+## 🤝 Contributing
 
-3. **Konfigurasi Path**
+1. Fork repository
+2. Buat feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push ke branch (`git push origin feature/AmazingFeature`)
+5. Buat Pull Request
 
-   Buka `app.py` dan sesuaikan path model:
+## 📝 License
 
-   ```python
-   MODEL_PATH = 'path/to/your/model.pth'
-   ```
+Proyek ini dilisensikan di bawah MIT License - lihat file [LICENSE](LICENSE) untuk detail.
 
-   Pastikan file model weights tersedia di path yang ditentukan.
+## ⚠️ Disclaimer
 
-## Menjalankan Aplikasi
+Sistem ini dibuat untuk tujuan penelitian dan pendidikan. **TIDAK** dimaksudkan untuk menggantikan diagnosis medis profesional. Selalu konsultasikan dengan dokter untuk diagnosis yang akurat.
 
-1. **Jalankan Server Flask**
+## 📞 Support
 
-   ```bash
-   python app.py
-   ```
+Jika Anda memiliki pertanyaan atau masalah:
+- Buat issue di repository
+- Hubungi tim pengembang
+- Lihat dokumentasi di folder `docs/`
 
-2. **Akses Aplikasi**
+---
 
-   Buka browser dan akses:
-   ```
-   http://localhost:5000
-   ```
-
-## Penggunaan
-
-1. Upload gambar lesi kulit
-2. Isi informasi metadata:
-   - Umur pasien (0-120)
-   - Jenis kelamin (Pria/Wanita)
-   - Lokasi lesi
-3. Klik "Analyze Image"
-4. Hasil akan menampilkan:
-   - Top 3 prediksi dengan probabilitas
-   - Visualisasi Grad-CAM
-   - Peringatan jika terdeteksi risiko melanoma tinggi
-
-## Catatan Penting
-
-- Aplikasi ini menggunakan GPU jika tersedia, namun akan fallback ke CPU jika tidak ada GPU
-- Model membutuhkan metadata lengkap untuk hasil optimal
-- Visualisasi Grad-CAM membantu interpretasi area yang menjadi fokus model
-- Aplikasi ini untuk tujuan edukasi, bukan untuk diagnosis medis
-
-## Troubleshooting
-
-1. **Import Error saat Install Requirements**
-   ```bash
-   # Jika ada masalah dengan torch, install manual:
-   pip install torch torchvision --index-url https://download.pytorch.org/whl/cu118  # Untuk CUDA 11.8
-   ```
-
-2. **CUDA Out of Memory**
-   ```python
-   # Di app.py, kurangi batch_size jika terjadi OOM:
-   BATCH_SIZE = 1  # Default untuk inference
-   ```
-
-3. **Model Loading Error**
-   - Pastikan path model benar
-   - Pastikan format model compatible (PyTorch state dict)
-   - Cek GPU memory jika menggunakan CUDA
-
-## Requirements
-
-Lihat `requirements.txt` untuk daftar lengkap dependencies. Key packages:
-- Flask
-- PyTorch
-- Transformers
-- Timm
-- Albumentations
-- PyTorch-Grad-CAM 
+**Dibuat dengan ❤️ untuk membantu diagnosis lesi kulit yang lebih akurat** 
